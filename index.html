@@ -6,7 +6,7 @@
     <title>Onshape Tips & Shortcuts</title>
     <style>
         :root {
-            --primary: #1155cc; /* Onshape Blue */
+            --primary: #1155cc;
             --bg: #f4f5f7;
             --text: #333;
         }
@@ -86,28 +86,52 @@
     <div class="header">
         <h1>Onshape Hub</h1>
         <p>Quick tips, tricks, and keyboard shortcuts.</p>
-        <input type="text" id="searchInput" placeholder="Search for a tool or shortcut (e.g., 'Extrude')...">
+        <input type="text" id="searchInput" placeholder="Search (e.g., 'Extrude', 'Shift', 'Sketch')...">
     </div>
     
-    <div class="grid" id="tipsGrid">
-        <!-- Cards will be injected here by JavaScript -->
-    </div>
+    <div class="grid" id="tipsGrid"></div>
 </div>
 
 <script>
-    // 1. The Data: Expand this array with more tips
+    // All shortcuts embedded directly as an array
     const tipsData = [
-        { category: "Sketch", title: "New Sketch", shortcut: "Shift + S", desc: "Creates a new sketch on the selected plane." },
-        { category: "3D Feature", title: "Extrude", shortcut: "Shift + E", desc: "Extrudes a sketch profile or face." },
-        { category: "View", title: "Isometric View", shortcut: "Shift + 7", desc: "Changes the camera view to standard isometric." },
-        { category: "View", title: "Zoom to Fit", shortcut: "F", desc: "Zooms the view so the entire model fits on the screen." },
-        { category: "Pro Tip", title: "Mass Properties", shortcut: "Click Scales Icon", desc: "Select parts in the tree, then click the scales icon in the bottom right to see volume and mass." }
+        { "category": "General", "title": "Keyboard Shortcuts Map", "shortcut": "Shift + ?", "desc": "Opens the complete in-app reference list of all default and custom shortcuts." },
+        { "category": "General", "title": "Shortcut Toolbar", "shortcut": "S", "desc": "Opens a context-sensitive tool menu directly under your mouse cursor." },
+        { "category": "General", "title": "Deselect All", "shortcut": "Space", "desc": "Clears all currently selected lines, faces, or parts." },
+        { "category": "General", "title": "Search Tools", "shortcut": "Alt + C", "desc": "Opens the tool search bar to quickly execute any command by name." },
+        { "category": "General", "title": "Measure Tool", "shortcut": "[", "desc": "Opens the dynamic distance, area, and length measurement panel." },
+        { "category": "Sketch", "title": "New Sketch", "shortcut": "Shift + S", "desc": "Creates a new sketch on the selected plane or flat face." },
+        { "category": "Sketch", "title": "Line", "shortcut": "L", "desc": "Activates the Line tool in the active sketch." },
+        { "category": "Sketch", "title": "Corner Rectangle", "shortcut": "G", "desc": "Draws a rectangle defined by two opposing corners." },
+        { "category": "Sketch", "title": "Center Rectangle", "shortcut": "R", "desc": "Draws a rectangle starting from a center point." },
+        { "category": "Sketch", "title": "Center Circle", "shortcut": "C", "desc": "Draws a circle starting from a center point." },
+        { "category": "Sketch", "title": "3-Point Arc", "shortcut": "A", "desc": "Creates an arc defined by start, end, and radius points." },
+        { "category": "Sketch", "title": "Dimension", "shortcut": "D", "desc": "Applies precise dimensions to entities or between points." },
+        { "category": "Sketch", "title": "Trim", "shortcut": "M", "desc": "Trims sketch segments to the nearest intersection." },
+        { "category": "Sketch", "title": "Extend", "shortcut": "X", "desc": "Extends a line or arc until it hits nearby geometry." },
+        { "category": "Sketch", "title": "Offset", "shortcut": "O", "desc": "Creates parallel or concentric copies of sketch curves." },
+        { "category": "Sketch", "title": "Use / Convert", "shortcut": "U", "desc": "Projects existing 3D model edges or faces into the active sketch plane." },
+        { "category": "Sketch", "title": "Toggle Construction", "shortcut": "Q", "desc": "Switches selected entities between active geometry and construction lines." },
+        { "category": "3D Feature", "title": "Extrude", "shortcut": "Shift + E", "desc": "Extrudes a sketch profile or face into 3D geometry." },
+        { "category": "3D Feature", "title": "Revolve", "shortcut": "Shift + W", "desc": "Revolves a profile around an axis line." },
+        { "category": "3D Feature", "title": "Fillet", "shortcut": "Shift + F", "desc": "Rounds or curves selected 3D edges." },
+        { "category": "View", "title": "Normal To View", "shortcut": "N", "desc": "Orients camera perpendicular to selected face or sketch (press again to flip)." },
+        { "category": "View", "title": "Zoom to Fit", "shortcut": "F", "desc": "Fits all model elements inside your active viewport window." },
+        { "category": "View", "title": "Zoom Box", "shortcut": "W", "desc": "Drag a window box to zoom in on a specific detail area." },
+        { "category": "View", "title": "Isometric View", "shortcut": "Shift + 7", "desc": "Snaps the 3D workspace orientation back to standard Isometric view." },
+        { "category": "View", "title": "Standard Views", "shortcut": "Shift + 1 to 6", "desc": "Shift+1 (Front), Shift+2 (Back), Shift+3 (Left), Shift+4 (Right), Shift+5 (Top), Shift+6 (Bottom)." },
+        { "category": "View", "title": "Toggle Planes", "shortcut": "P", "desc": "Shows or hides the primary Top, Front, and Right reference planes." },
+        { "category": "View", "title": "Hide Selected", "shortcut": "Y", "desc": "Hides the currently selected face, part, or component from view." },
+        { "category": "Assembly", "title": "Mate Tool", "shortcut": "M", "desc": "Opens the assembly constraint tool to join components together." },
+        { "category": "Assembly", "title": "Mate Connector", "shortcut": "Ctrl + M", "desc": "Generates custom coordinate orientation nodes on target geometry." },
+        { "category": "Assembly", "title": "Lock Inference Point", "shortcut": "Shift", "desc": "Hold Shift to lock auto-snapped mate inference points while dragging." },
+        { "category": "Pro Tip", "title": "Select Through Glass", "shortcut": "Alt + Click", "desc": "Selects hidden internal faces through transparent or overlapping objects." },
+        { "category": "Pro Tip", "title": "Commit & Repeat Tool", "shortcut": "Shift + Enter", "desc": "Applies the current feature settings and instantly opens a fresh dialog of the same tool." }
     ];
 
     const grid = document.getElementById('tipsGrid');
     const searchInput = document.getElementById('searchInput');
 
-    // 2. Render Function
     function renderTips(tips) {
         grid.innerHTML = '';
         tips.forEach(tip => {
@@ -123,18 +147,17 @@
         });
     }
 
-    // 3. Search Filter
     searchInput.addEventListener('input', (e) => {
         const term = e.target.value.toLowerCase();
         const filtered = tipsData.filter(tip => 
             tip.title.toLowerCase().includes(term) || 
             tip.desc.toLowerCase().includes(term) ||
+            tip.category.toLowerCase().includes(term) ||
             (tip.shortcut && tip.shortcut.toLowerCase().includes(term))
         );
         renderTips(filtered);
     });
 
-    // Initial render
     renderTips(tipsData);
 </script>
 
