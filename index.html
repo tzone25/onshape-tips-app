@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Onshape Tips & Shortcuts</title>
+    <style>
+        :root {
+            --primary: #1155cc; /* Onshape Blue */
+            --bg: #f4f5f7;
+            --text: #333;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 2rem;
+            line-height: 1.5;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        input[type="text"] {
+            width: 100%;
+            max-width: 400px;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        .card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+        }
+        .shortcut-badge {
+            background: var(--primary);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 14px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        .category {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #666;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+        .title {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0 0 10px 0;
+        }
+        .desc {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Onshape Hub</h1>
+        <p>Quick tips, tricks, and keyboard shortcuts.</p>
+        <input type="text" id="searchInput" placeholder="Search for a tool or shortcut (e.g., 'Extrude')...">
+    </div>
+    
+    <div class="grid" id="tipsGrid">
+        <!-- Cards will be injected here by JavaScript -->
+    </div>
+</div>
+
+<script>
+    // 1. The Data: Expand this array with more tips
+    const tipsData = [
+        { category: "Sketch", title: "New Sketch", shortcut: "Shift + S", desc: "Creates a new sketch on the selected plane." },
+        { category: "3D Feature", title: "Extrude", shortcut: "Shift + E", desc: "Extrudes a sketch profile or face." },
+        { category: "View", title: "Isometric View", shortcut: "Shift + 7", desc: "Changes the camera view to standard isometric." },
+        { category: "View", title: "Zoom to Fit", shortcut: "F", desc: "Zooms the view so the entire model fits on the screen." },
+        { category: "Pro Tip", title: "Mass Properties", shortcut: "Click Scales Icon", desc: "Select parts in the tree, then click the scales icon in the bottom right to see volume and mass." }
+    ];
+
+    const grid = document.getElementById('tipsGrid');
+    const searchInput = document.getElementById('searchInput');
+
+    // 2. Render Function
+    function renderTips(tips) {
+        grid.innerHTML = '';
+        tips.forEach(tip => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <div class="category">${tip.category}</div>
+                <h3 class="title">${tip.title}</h3>
+                ${tip.shortcut ? `<div class="shortcut-badge">${tip.shortcut}</div>` : ''}
+                <p class="desc">${tip.desc}</p>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    // 3. Search Filter
+    searchInput.addEventListener('input', (e) => {
+        const term = e.target.value.toLowerCase();
+        const filtered = tipsData.filter(tip => 
+            tip.title.toLowerCase().includes(term) || 
+            tip.desc.toLowerCase().includes(term) ||
+            (tip.shortcut && tip.shortcut.toLowerCase().includes(term))
+        );
+        renderTips(filtered);
+    });
+
+    // Initial render
+    renderTips(tipsData);
+</script>
+
+</body>
+</html>
